@@ -34,11 +34,31 @@ function Board({ nrows, ncols, chanceLightStartsOn }) {
   function createBoard() {
     let initialBoard = [];
     // TODO: create array-of-arrays of true/false values
+    // For each row, go through ncols. Run randomizer and push T or F
     return initialBoard;
   }
 
   function hasWon() {
+
+    /**
+    *       .  .  .
+    *       O  O  .     (where . is off, and O is on)
+    *       .    .  .
+    *
+    */
+
     // TODO: check the board in state to determine whether the player has won.
+
+    // Filter through the initial board. For each row, check each cell.
+    // If ANY cell is t, return false. 
+    // Else return true
+
+    // Could consider filtering
+
+    for (row in initialBoard){
+      if(row.contains('t')) return false 
+    }
+    return true
   }
 
   function flipCellsAround(coord) {
