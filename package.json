@@ -9,10 +9,11 @@
     "react": "*",
     "react-dom": "*",
     "react-scripts": "*",
+    "testing-library": "^0.0.2",
     "web-vitals": "*"
   },
   "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "*"
+    "@babel/plugin-proposal-private-property-in-object": "7.21.0-placeholder-for-preset-env.2"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -24,7 +25,7 @@
     "extends": "react-app"
   },
   "browserslist": {
-    "production": [
+    "pxroduction": [
       ">0.2%",
       "not dead",
       "not op_mini all"

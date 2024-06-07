@@ -27,7 +27,7 @@ import "./Board.css";
  *
  **/
 
-function Board({ nrows, ncols, chanceLightStartsOn }) {
+function Board({ nrows=5, ncols=5, chanceLightStartsOn=0.5 }) {
   const [board, setBoard] = useState(createBoard());
 
   /** create a board nrows high/ncols wide, each cell randomly lit or unlit */
@@ -35,6 +35,15 @@ function Board({ nrows, ncols, chanceLightStartsOn }) {
     let initialBoard = [];
     // TODO: create array-of-arrays of true/false values
     // For each row, go through ncols. Run randomizer and push T or F
+    for(let i = 0; i < nrows; i++){
+      initialBoard.push([])
+      let rand
+      for(let b = 0; b < ncols; b++){
+        rand = Math.random()
+        if(rand >= chanceLightStartsOn) initialBoard[i].push(<Cell isLit={true} />)
+        else initialBoard[i].push(<Cell isLit={false} />)
+      }
+    }
     return initialBoard;
   }
 
@@ -75,6 +84,8 @@ function Board({ nrows, ncols, chanceLightStartsOn }) {
 
       // TODO: Make a (deep) copy of the oldBoard
 
+      const newBoard = oldBoard.map()
+
       // TODO: in the copy, flip this cell and the cells around it
 
       // TODO: return the copy
@@ -89,5 +100,11 @@ function Board({ nrows, ncols, chanceLightStartsOn }) {
 
   // TODO
 }
+
+// Board.defaultProps = {
+//   nrows: 5,
+//   ncols: 5,
+//   chanceLightStartsOn: 0.5
+// }
 
 export default Board;
