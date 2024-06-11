@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Cell from "./Cell";
 import "./Board.css";
+import { render } from "@testing-library/react";
 
 /** Game board of Lights out.
  *
@@ -30,47 +31,47 @@ import "./Board.css";
 function Board({ nrows=5, ncols=5, chanceLightStartsOn=0.5 }) {
   const [board, setBoard] = useState(createBoard());
 
-  /** create a board nrows high/ncols wide, each cell randomly lit or unlit */
+  /**
+   * Creates a playing board based on ncols and nrows. Lights are randomly lit depending on a randomizer.
+   * @returns Object the playing board.
+   */
   function createBoard() {
     let initialBoard = [];
-    // TODO: create array-of-arrays of true/false values
-    // For each row, go through ncols. Run randomizer and push T or F
-    for(let i = 0; i < nrows; i++){
-      initialBoard.push([])
-      let rand
-      for(let b = 0; b < ncols; b++){
-        rand = Math.random()
-        if(rand >= chanceLightStartsOn) initialBoard[i].push(<Cell isLit={true} />)
-        else initialBoard[i].push(<Cell isLit={false} />)
+    for (let i = 0; i < nrows; i++) {
+      initialBoard.push([]);
+      for (let b = 0; b < ncols; b++) {
+        const isLit = Math.random() < chanceLightStartsOn;
+        initialBoard[i].push(isLit);
       }
     }
     return initialBoard;
   }
 
+
+  /**
+   * Checks if user has won game.
+   * @returns True if all the cells are off.
+   */
   function hasWon() {
 
-    /**
-    *       .  .  .
-    *       O  O  .     (where . is off, and O is on)
-    *       .    .  .
-    *
-    */
-
-    // TODO: check the board in state to determine whether the player has won.
-
     // Filter through the initial board. For each row, check each cell.
-    // If ANY cell is t, return false. 
-    // Else return true
+    // If ANY cell is t, return false. Else, return true
 
-    // Could consider filtering
-
-    for (row in initialBoard){
-      if(row.contains('t')) return false 
+    for (let row of board) {
+      for (let cell of row) {
+        if (cell) return false;
+      }
     }
-    return true
+    return true;
   }
 
-  function flipCellsAround(coord) {
+
+  /**
+   * Flips adjacent cells to select cell to on/off.
+   * @param {String} coord Get key of cell to modify it and adjacent cells
+   * @returns {Object} New modified board 
+   */
+  function flipCellsAroundMe(coord) {
     setBoard(oldBoard => {
       const [y, x] = coord.split("-").map(Number);
 
@@ -82,29 +83,47 @@ function Board({ nrows=5, ncols=5, chanceLightStartsOn=0.5 }) {
         }
       };
 
-      // TODO: Make a (deep) copy of the oldBoard
+      // Make a (deep) copy of the oldBoard
 
-      const newBoard = oldBoard.map()
+      const newBoard = oldBoard.map(row => [...row]);
 
-      // TODO: in the copy, flip this cell and the cells around it
 
-      // TODO: return the copy
+      // Flip the cell and adjacent cells
+      flipCell(y, x, newBoard);
+      flipCell(y + 1, x, newBoard);
+      flipCell(y - 1, x, newBoard);
+      flipCell(y, x + 1, newBoard);
+      flipCell(y, x - 1, newBoard);
+
+      return newBoard
     });
   }
 
   // if the game is won, just show a winning msg & render nothing else
 
-  // TODO
+  if (hasWon()) {
+    return <div>You win!</div>;
+  }
 
-  // make table board
 
-  // TODO
-}
+  return (
+    <table className="Board">
+      <tbody>
+        {board.map((row, y) => (
+          <tr key={y}>
+            {row.map((isLit, x) => (
+              <Cell
+                key={`${y}-${x}`}
+                isLit={isLit}
+                flipCellsAroundMe={() => flipCellsAroundMe(`${y}-${x}`)}
+              />
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+  }
 
-// Board.defaultProps = {
-//   nrows: 5,
-//   ncols: 5,
-//   chanceLightStartsOn: 0.5
-// }
 
 export default Board;
